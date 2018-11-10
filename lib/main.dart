@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:connectivity/connectivity.dart';
+
+import 'dart:async';
+import 'dart:convert';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+
+  Widget body = Text('Scan!');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('7FLOWERS'),
+        ),
+        body: Center(
+          child: body,
+        ),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.photo_camera),
+            onPressed: () {
+              start().then((Widget value) {
+                setState(() {
+                  body = value;
+                });
+              });
+            }),
+      ),
+    );
+  }
+
+  Future<Widget> start() async{
+    bool isConnected = await isConnectedToNetwork();
+    if(!isConnected){
+      return Text('Check internet connection');
+    }
+
+    String barcode = await scan();
+    if(barcode.isEmpty){
+      return Text('Scan');
+    }
+
+    String goodInfo = await getGoodInfo(barcode);
+
+    Map<String, dynamic> map = json.decode(goodInfo);
+
+//    double price = 0.0;
+//    if(map["price"] is double){
+//      price = map["price"];
+//    }else if (map["price"] is int){
+//      price = price + map["price"];
+//    }
+  }
+
+  Future<bool> isConnectedToNetwork() async {
+    var connectivityResult = await (new Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<String> scan() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      return barcode;
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        return ''; //'The user did not grant the camera permission!';
+      } else {
+        return ''; //'Unknown error: $e');
+      }
+    } on FormatException {
+      return ''; //'null (User returned using the "back"-button before scanning anything. Result)');
+    } catch (e) {
+      return ''; //'Unknown error: $e');
+    }
+  }
+
+  Future<String> getGoodInfo(String barcode) async {
+    final response =
+        await http.get('http://appapi.ru:7000/barcode?barcode=$barcode');
+    //TODO add checks for answer
+    return response.body;
+  }
+}
