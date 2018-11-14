@@ -48,7 +48,7 @@ class MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Price checker'),
         ),
-        body: LoadingPage(),
+        body: StartPage(null),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.photo_camera),
             onPressed: () {
