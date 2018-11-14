@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import './widgets/flowers_card.dart';
 import './widgets/start_page.dart';
+import './widgets/loading_page.dart';
 import './objects/flower.dart';
 
 void main() => runApp(MyApp());
@@ -47,7 +48,7 @@ class MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Price checker'),
         ),
-        body: StartPage(null),//FlowerCard(flower),
+        body: LoadingPage(),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.photo_camera),
             onPressed: () {
