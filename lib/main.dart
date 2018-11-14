@@ -13,10 +13,13 @@ import './widgets/loading_page.dart';
 import './widgets/error_page.dart';
 import './objects/flower.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
+      home: MyApp()));
+}
 
 class MyApp extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return MyAppState();
@@ -24,37 +27,93 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-
   bool _isLoading = false;
   bool _isError = false;
   Flower _flower;
   String _errorText;
 
-  MyAppState(){
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController controller =
+      TextEditingController(text: '5500009866193');
+
+  MyAppState() {
     _isLoading = true;
     checkConnection();
   }
 
-  Widget _getBodyWidget(){
-        if (_isLoading){
-          return LoadingPage();
-        }else if(_isError){
-          return ErrorPage(_errorText);
-        }else if(_flower != null){
-          return FlowerCard(_flower);
-        }else{
-          return StartPage(scan, getGoodInfo);
-        };
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Price checker'),
-        ),
-        body: _getBodyWidget(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Price checker'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.symmetric(vertical: 24.0),
+              child: Image.asset('assets/logo7fl.jpg')),
+          Form(
+              key: _formKey,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        controller: controller,
+                        decoration: InputDecoration(labelText: 'Enter barcode'),
+                        maxLength: 13,
+                        keyboardType: TextInputType.number,
+                        validator: (String value) {
+                          if (value.length < 13) {
+                            return 'Barcode has length 13 symbols';
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          SizedBox(
+            width: 16.0,
+          ),
+          RaisedButton(
+            child: Text(
+              'Search',
+              style: Theme.of(context).textTheme.button,
+
+            ),
+            color: Theme.of(context).primaryColor,
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                getGoodInfo(controller.text).then((Flower flower) {
+                  if(flower == null) return;
+                  Navigator.of(context).push(
+                      MaterialPageRoute<Null>(builder: (BuildContext context) {
+                    return FlowerCard(flower);
+                  }));
+                });
+              }
+            },
+          ),
+
+          RaisedButton(
+            child: Text(
+              'Scan',
+              style: TextStyle(color: Colors.white),
+            ),
+            color: Theme.of(context).primaryColor,
+            onPressed: () {
+              scan().then((Flower flower){
+                if(flower == null) return;
+                Navigator.of(context).push(
+                    MaterialPageRoute<Null>(builder: (BuildContext context) {
+                      return FlowerCard(flower);
+                    }));
+              });
+            },
+          )
+        ],
       ),
     );
   }
@@ -76,35 +135,32 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  void scan() async {
+  Future<Flower> scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      getGoodInfo(barcode);
+      return getGoodInfo(barcode);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        return ; //'The user did not grant the camera permission!';
+        return null; //'The user did not grant the camera permission!';
       } else {
-        return ; //'Unknown error: $e');
+        return null; //'Unknown error: $e');
       }
     } on FormatException {
-      return ; //'null (User returned using the "back"-button before scanning anything. Result)');
+      return null; //'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-      return ; //'Unknown error: $e');
+      return null; //'Unknown error: $e');
     }
   }
 
-  void getGoodInfo(String barcode) async {
+  Future<Flower> getGoodInfo(String barcode) async {
+    final Map<String, String> headers = {'Authorization': 'Basic dXNlcjo='};
 
-    final Map<String, String> headers = {
-      'Authorization': 'Basic dXNlcjo='
-    };
-
-    final response =
-        await http.get('http://msavelev/UT11_PE/ru_RU/hs/pricechecker/price?barcode=$barcode',
+    final response = await http.get(
+        'http://msavelev/UT11_PE/ru_RU/hs/pricechecker/price?barcode=$barcode',
         headers: headers);
 
-    if(response.statusCode != 200){
-      return ;
+    if (response.statusCode != 200) {
+      return null;
     }
 
     Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
@@ -125,11 +181,12 @@ class MyAppState extends State<MyApp> {
         premium: map['premium'],
         fixPrice: map['fixPrice']);
 
+    return flower;
+
     setState(() {
       _flower = flower;
       _isLoading = false;
       _isError = false;
     });
-
   }
 }

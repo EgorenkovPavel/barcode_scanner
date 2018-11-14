@@ -87,25 +87,28 @@ class FlowerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Image.network(flower.photoPath),
-        Center(
-          child: Text(
-            flower.title,
-            style: TextStyle(fontSize: 20),
-          ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Price checker'),),
+        body: ListView(
+          children: <Widget>[
+            Image.network(flower.photoPath),
+            Center(
+              child: Text(
+                flower.title,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            _tagBar(),
+            _priceTag(flower.regularPrice.toString()),
+            _valueWidget('Barcode', flower.barcode),
+            _valueWidget('Description', flower.description),
+            _valueWidget('Genus', flower.genus),
+            _valueWidget('Type', flower.type),
+            _valueWidget('Variety', flower.variety),
+            _valueWidget('Country', flower.country),
+            _valueWidget('Color', flower.color),
+          ],
         ),
-        _tagBar(),
-        _priceTag(flower.regularPrice.toString()),
-        _valueWidget('Barcode', flower.barcode),
-        _valueWidget('Description', flower.description),
-        _valueWidget('Genus', flower.genus),
-        _valueWidget('Type', flower.type),
-        _valueWidget('Variety', flower.variety),
-        _valueWidget('Country', flower.country),
-        _valueWidget('Color', flower.color),
-      ],
     );
   }
 }
