@@ -7,6 +7,9 @@ import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 import 'dart:convert';
 
+import './widgets/flowers_card.dart';
+import './objects/flower.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -17,8 +20,24 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-
   Widget body = Text('Scan!');
+
+  Flower flower = Flower(
+      title: 'Rose',
+      barcode: '2345323452345',
+      description: 'L-40',
+      genus: 'genus',
+      type: 'type',
+      variety: 'variety',
+      country: 'Poland',
+      color: 'blue',
+      regularPrice: 12.4,
+      photoPath:
+          'https://www.flyingflowers.co.uk/ff_images/product/8466/FC93621F.jpg?large',
+      delicious: true,
+      sale: true,
+      premium: true,
+      fixPrice: true);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +46,7 @@ class MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('7FLOWERS'),
         ),
-        body: Center(
-          child: body,
-        ),
+        body: FlowerCard(flower),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.photo_camera),
             onPressed: () {
@@ -43,14 +60,14 @@ class MyAppState extends State<MyApp> {
     );
   }
 
-  Future<Widget> start() async{
+  Future<Widget> start() async {
     bool isConnected = await isConnectedToNetwork();
-    if(!isConnected){
+    if (!isConnected) {
       return Text('Check internet connection');
     }
 
     String barcode = await scan();
-    if(barcode.isEmpty){
+    if (barcode.isEmpty) {
       return Text('Scan');
     }
 
