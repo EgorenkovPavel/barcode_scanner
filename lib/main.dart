@@ -16,6 +16,7 @@ import './objects/flower.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return MyAppState();
@@ -27,34 +28,22 @@ class MyAppState extends State<MyApp> {
   bool _isLoading = false;
   bool _isError = false;
   Flower _flower;
-  String _error;
+  String _errorText;
 
-  Flower flower = Flower(
-      title: 'Rose',
-      barcode: '2345323452345',
-      description: 'L-40',
-      genus: 'genus',
-      type: 'type',
-      variety: 'variety',
-      country: 'Poland',
-      color: 'blue',
-      regularPrice: 12.4,
-      photoPath:
-          'https://www.flyingflowers.co.uk/ff_images/product/8466/FC93621F.jpg?large',
-      delicious: true,
-      sale: true,
-      premium: true,
-      fixPrice: true);
+  MyAppState(){
+    _isLoading = true;
+    checkConnection();
+  }
 
   Widget _getBodyWidget(){
         if (_isLoading){
           return LoadingPage();
         }else if(_isError){
-          return ErrorPage(_error);
+          return ErrorPage(_errorText);
         }else if(_flower != null){
           return FlowerCard(_flower);
         }else{
-          return StartPage(null);
+          return StartPage(scan, getGoodInfo);
         };
   }
 
@@ -70,65 +59,77 @@ class MyAppState extends State<MyApp> {
     );
   }
 
-  Future<Widget> start() async {
-    bool isConnected = await isConnectedToNetwork();
-    if (!isConnected) {
-      return Text('Check internet connection');
-    }
-
-    String barcode = await scan();
-    if (barcode.isEmpty) {
-      return Text('Scan');
-    }
-
-    Flower flower = await getGoodInfo(barcode);
-
-    }
-
-  Future<bool> isConnectedToNetwork() async {
+  void checkConnection() async {
     var connectivityResult = await (new Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      return false;
+      setState(() {
+        _isError = true;
+        _isLoading = false;
+        _errorText = "No connection. Check the internet";
+      });
     } else {
-      return true;
+      setState(() {
+        _isError = false;
+        _isLoading = false;
+        _errorText = '';
+      });
     }
   }
 
-  Future<String> scan() async {
+  void scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      return barcode;
+      getGoodInfo(barcode);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        return ''; //'The user did not grant the camera permission!';
+        return ; //'The user did not grant the camera permission!';
       } else {
-        return ''; //'Unknown error: $e');
+        return ; //'Unknown error: $e');
       }
     } on FormatException {
-      return ''; //'null (User returned using the "back"-button before scanning anything. Result)');
+      return ; //'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-      return ''; //'Unknown error: $e');
+      return ; //'Unknown error: $e');
     }
   }
 
-  Future<Flower> getGoodInfo(String barcode) async {
+  void getGoodInfo(String barcode) async {
+
+    final Map<String, String> headers = {
+      'Authorization': 'Basic dXNlcjo='
+    };
+
     final response =
-        await http.get('http://appapi.ru:7000/barcode?barcode=$barcode');
+        await http.get('http://msavelev/UT11_PE/ru_RU/hs/pricechecker/price?barcode=$barcode',
+        headers: headers);
 
     if(response.statusCode != 200){
-      return null;
+      return ;
     }
 
-//    Map<String, dynamic> map = json.decode(response.body);
+    Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
 
-//    double price = 0.0;
-//    if(map["price"] is double){
-//      price = map["price"];
-//    }else if (map["price"] is int){
-//      price = price + map["price"];
-//    }
+    Flower flower = Flower(
+        title: map['title'],
+        barcode: map['barcode'],
+        description: map['description'],
+        genus: map['genus'],
+        type: map['type'],
+        variety: map['variety'],
+        country: map['country'],
+        color: map['color'],
+        regularPrice: map['regularPrice'],
+        photoPath: map['photoPath'],
+        delicious: map['delicious'],
+        sale: map['sale'],
+        premium: map['premium'],
+        fixPrice: map['fixPrice']);
 
+    setState(() {
+      _flower = flower;
+      _isLoading = false;
+      _isError = false;
+    });
 
-    return null;//response.body;
   }
 }

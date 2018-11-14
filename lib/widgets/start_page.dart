@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class StartPage extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
-  final Function searchBarcode;
+  final Function scan;
+  final Function getGoodInfo;
   final TextEditingController controller = TextEditingController();
 
-  StartPage(this.searchBarcode);
+  StartPage(this.scan, this.getGoodInfo);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class StartPage extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                     onPressed: (){
                       if(_formKey.currentState.validate()){
-                        searchBarcode(controller.text);
+                        getGoodInfo(controller.text);
                       }
                     },)
                 ],
@@ -52,7 +53,9 @@ class StartPage extends StatelessWidget {
           ),
           RaisedButton(child: Text('Scan', style: TextStyle(color: Colors.white),) ,
             color: Theme.of(context).primaryColor,
-            onPressed: (){},)
+            onPressed: (){
+              scan();
+            },)
         ],
     );
   }

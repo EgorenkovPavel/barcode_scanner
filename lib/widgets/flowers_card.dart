@@ -8,6 +8,10 @@ class FlowerCard extends StatelessWidget {
   FlowerCard(this.flower);
 
   Widget _valueWidget(String title, String value) {
+    if(value.isEmpty){
+      return SizedBox();
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
       child: Row(
