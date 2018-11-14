@@ -1,0 +1,56 @@
+import 'package:flutter/material.dart';
+
+class StartPage extends StatelessWidget {
+
+  final _formKey = GlobalKey<FormState>();
+  final Function searchBarcode;
+  final TextEditingController controller = TextEditingController();
+
+  StartPage(this.searchBarcode);
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset('assets/logo7fl.jpg'),
+          Text('Press the button and scan barcode'),
+          Text('or'),
+          Text('type it in text field'),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                    controller: controller,
+                    decoration: InputDecoration(helperText: 'Enter barcode'),
+                    maxLength: 13,
+                    keyboardType:
+                        TextInputType.number,
+                    validator: (String value){
+                      if(value.length < 13){
+                        return 'Barcode has length 13 symbols';
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(width: 16.0,),
+                RaisedButton(
+                  child: Text('Search', style: TextStyle(color: Colors.white),),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: (){
+                    if(_formKey.currentState.validate()){
+                      searchBarcode(controller.text);
+                    }
+                  },)
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import './widgets/flowers_card.dart';
+import './widgets/start_page.dart';
 import './objects/flower.dart';
 
 void main() => runApp(MyApp());
@@ -44,9 +45,9 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('7FLOWERS'),
+          title: Text('Price checker'),
         ),
-        body: FlowerCard(flower),
+        body: StartPage(null),//FlowerCard(flower),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.photo_camera),
             onPressed: () {
@@ -71,17 +72,9 @@ class MyAppState extends State<MyApp> {
       return Text('Scan');
     }
 
-    String goodInfo = await getGoodInfo(barcode);
+    Flower flower = await getGoodInfo(barcode);
 
-    Map<String, dynamic> map = json.decode(goodInfo);
-
-//    double price = 0.0;
-//    if(map["price"] is double){
-//      price = map["price"];
-//    }else if (map["price"] is int){
-//      price = price + map["price"];
-//    }
-  }
+    }
 
   Future<bool> isConnectedToNetwork() async {
     var connectivityResult = await (new Connectivity().checkConnectivity());
@@ -109,10 +102,24 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  Future<String> getGoodInfo(String barcode) async {
+  Future<Flower> getGoodInfo(String barcode) async {
     final response =
         await http.get('http://appapi.ru:7000/barcode?barcode=$barcode');
-    //TODO add checks for answer
-    return response.body;
+
+    if(response.statusCode != 200){
+      return null;
+    }
+
+//    Map<String, dynamic> map = json.decode(response.body);
+
+//    double price = 0.0;
+//    if(map["price"] is double){
+//      price = map["price"];
+//    }else if (map["price"] is int){
+//      price = price + map["price"];
+//    }
+
+
+    return null;//response.body;
   }
 }
