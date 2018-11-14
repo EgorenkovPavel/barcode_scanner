@@ -10,6 +10,7 @@ import 'dart:convert';
 import './widgets/flowers_card.dart';
 import './widgets/start_page.dart';
 import './widgets/loading_page.dart';
+import './widgets/error_page.dart';
 import './objects/flower.dart';
 
 void main() => runApp(MyApp());
@@ -22,7 +23,11 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Widget body = Text('Scan!');
+
+  bool _isLoading = false;
+  bool _isError = false;
+  Flower _flower;
+  String _error;
 
   Flower flower = Flower(
       title: 'Rose',
@@ -41,6 +46,18 @@ class MyAppState extends State<MyApp> {
       premium: true,
       fixPrice: true);
 
+  Widget _getBodyWidget(){
+        if (_isLoading){
+          return LoadingPage();
+        }else if(_isError){
+          return ErrorPage(_error);
+        }else if(_flower != null){
+          return FlowerCard(_flower);
+        }else{
+          return StartPage(null);
+        };
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,16 +65,7 @@ class MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Price checker'),
         ),
-        body: StartPage(null),
-        floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.photo_camera),
-            onPressed: () {
-              start().then((Widget value) {
-                setState(() {
-                  body = value;
-                });
-              });
-            }),
+        body: _getBodyWidget(),
       ),
     );
   }
