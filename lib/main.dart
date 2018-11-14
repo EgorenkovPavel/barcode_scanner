@@ -15,7 +15,7 @@ import './objects/flower.dart';
 
 void main() {
   runApp(MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.orange),
+      theme: ThemeData(primarySwatch: Colors.orange, textTheme: TextTheme(button: TextStyle(color: Colors.white))),
       home: MyApp()));
 }
 
@@ -79,7 +79,7 @@ class MyAppState extends State<MyApp> {
           ),
           RaisedButton(
             child: Text(
-              'Search',
+              'SEARCH',
               style: Theme.of(context).textTheme.button,
 
             ),
@@ -99,8 +99,8 @@ class MyAppState extends State<MyApp> {
 
           RaisedButton(
             child: Text(
-              'Scan',
-              style: TextStyle(color: Colors.white),
+              'SCAN',
+              style: Theme.of(context).textTheme.button,
             ),
             color: Theme.of(context).primaryColor,
             onPressed: () {
