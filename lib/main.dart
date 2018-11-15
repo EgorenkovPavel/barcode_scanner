@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity/connectivity.dart';
 
 import 'dart:async';
 import 'dart:convert';
-
 import './widgets/flowers_card.dart';
-import './widgets/start_page.dart';
-import './widgets/loading_page.dart';
-import './widgets/error_page.dart';
 import './objects/flower.dart';
 
 void main() {
@@ -27,19 +22,10 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  bool _isLoading = false;
-  bool _isError = false;
-  Flower _flower;
-  String _errorText;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController controller =
       TextEditingController(text: '5500009866193');
-
-  MyAppState() {
-    _isLoading = true;
-    checkConnection();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +72,10 @@ class MyAppState extends State<MyApp> {
             color: Theme.of(context).primaryColor,
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                getGoodInfo(controller.text).then((Flower flower) {
-                  if(flower == null) return;
-                  Navigator.of(context).push(
+                 Navigator.of(context).push(
                       MaterialPageRoute<Null>(builder: (BuildContext context) {
-                    return FlowerCard(flower);
+                    return FlowerCard(controller.text);
                   }));
-                });
               }
             },
           ),
@@ -104,11 +87,11 @@ class MyAppState extends State<MyApp> {
             ),
             color: Theme.of(context).primaryColor,
             onPressed: () {
-              scan().then((Flower flower){
-                if(flower == null) return;
+              scan().then((String barcode){
+                if(barcode.isEmpty) return;
                 Navigator.of(context).push(
                     MaterialPageRoute<Null>(builder: (BuildContext context) {
-                      return FlowerCard(flower);
+                      return FlowerCard(barcode);
                     }));
               });
             },
@@ -118,75 +101,21 @@ class MyAppState extends State<MyApp> {
     );
   }
 
-  void checkConnection() async {
-    var connectivityResult = await (new Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      setState(() {
-        _isError = true;
-        _isLoading = false;
-        _errorText = "No connection. Check the internet";
-      });
-    } else {
-      setState(() {
-        _isError = false;
-        _isLoading = false;
-        _errorText = '';
-      });
-    }
-  }
-
-  Future<Flower> scan() async {
+  Future<String> scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      return getGoodInfo(barcode);
+      return barcode;
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        return null; //'The user did not grant the camera permission!';
+        return ''; //'The user did not grant the camera permission!';
       } else {
-        return null; //'Unknown error: $e');
+        return ''; //'Unknown error: $e');
       }
     } on FormatException {
-      return null; //'null (User returned using the "back"-button before scanning anything. Result)');
+      return ''; //'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-      return null; //'Unknown error: $e');
+      return ''; //'Unknown error: $e');
     }
   }
 
-  Future<Flower> getGoodInfo(String barcode) async {
-    final Map<String, String> headers = {'Authorization': 'Basic dXNlcjo='};
-
-    final response = await http.get(
-        'http://msavelev/UT11_PE/ru_RU/hs/pricechecker/price?barcode=$barcode',
-        headers: headers);
-
-    if (response.statusCode != 200) {
-      return null;
-    }
-
-    Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
-
-    Flower flower = Flower(
-        title: map['title'],
-        barcode: map['barcode'],
-        description: map['description'],
-        genus: map['genus'],
-        type: map['type'],
-        variety: map['variety'],
-        country: map['country'],
-        color: map['color'],
-        regularPrice: map['regularPrice'],
-        photoPath: map['photoPath'],
-        delicious: map['delicious'],
-        sale: map['sale'],
-        premium: map['premium'],
-        fixPrice: map['fixPrice']);
-
-    return flower;
-
-    setState(() {
-      _flower = flower;
-      _isLoading = false;
-      _isError = false;
-    });
-  }
 }
