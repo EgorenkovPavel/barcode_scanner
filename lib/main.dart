@@ -7,7 +7,9 @@ import './widgets/flowers_card.dart';
 
 void main() {
   runApp(MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.orange, textTheme: TextTheme(button: TextStyle(color: Colors.white))),
+      theme: ThemeData(
+          primarySwatch: Colors.orange,
+          textTheme: TextTheme(button: TextStyle(color: Colors.white))),
       home: MyApp()));
 }
 
@@ -19,7 +21,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController controller =
       TextEditingController(text: '5500009866193');
@@ -30,71 +31,72 @@ class MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: Text('Price checker'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-                padding: EdgeInsets.symmetric(vertical: 24.0),
-                child: Image.asset('assets/logo7fl.jpg')),
-            Form(
-                key: _formKey,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: <Widget>[
-                      Flexible(
-                        child: TextFormField(
-                          controller: controller,
-                          decoration: InputDecoration(labelText: 'Enter barcode'),
-                          maxLength: 13,
-                          keyboardType: TextInputType.number,
-                          validator: (String value) {
-                            if (value.length < 13) {
-                              return 'Barcode has length 13 symbols';
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/logo7fl.jpg'),
+              Form(
+                  key: _formKey,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: TextFormField(
+                            controller: controller,
+                            decoration:
+                                InputDecoration(labelText: 'Enter barcode'),
+                            maxLength: 13,
+                            keyboardType: TextInputType.number,
+                            validator: (String value) {
+                              if (value.length < 13) {
+                                return 'Barcode has length 13 symbols';
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 16.0,
+                        ),
+                        RaisedButton(
+                          child: Text(
+                            'SEARCH',
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              Navigator.of(context).push(
+                                  MaterialPageRoute<Null>(
+                                      builder: (BuildContext context) {
+                                return FlowerCard(controller.text);
+                              }));
                             }
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                )),
-            SizedBox(
-              width: 16.0,
-            ),
-            RaisedButton(
-              child: Text(
-                'SEARCH',
-                style: Theme.of(context).textTheme.button,
-
-              ),
-              color: Theme.of(context).primaryColor,
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                   Navigator.of(context).push(
-                        MaterialPageRoute<Null>(builder: (BuildContext context) {
-                      return FlowerCard(controller.text);
+                      ],
+                    ),
+                  )),
+              RaisedButton(
+                child: Text(
+                  'SCAN',
+                  style: Theme.of(context).textTheme.button,
+                ),
+                color: Theme.of(context).primaryColor,
+                onPressed: () {
+                  scan().then((String barcode) {
+                    if (barcode.isEmpty) return;
+                    Navigator.of(context).push(MaterialPageRoute<Null>(
+                        builder: (BuildContext context) {
+                      return FlowerCard(barcode);
                     }));
-                }
-              },
-            ),
-
-            RaisedButton(
-              child: Text(
-                'SCAN',
-                style: Theme.of(context).textTheme.button,
-              ),
-              color: Theme.of(context).primaryColor,
-              onPressed: () {
-                scan().then((String barcode){
-                  if(barcode.isEmpty) return;
-                  Navigator.of(context).push(
-                      MaterialPageRoute<Null>(builder: (BuildContext context) {
-                        return FlowerCard(barcode);
-                      }));
-                });
-              },
-            )
-          ],
+                  });
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -116,5 +118,4 @@ class MyAppState extends State<MyApp> {
       return ''; //'Unknown error: $e');
     }
   }
-
 }

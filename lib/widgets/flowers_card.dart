@@ -18,9 +18,10 @@ class FlowerCard extends StatefulWidget {
   }
 }
 
-class FlowerCardState extends State<FlowerCard>{
+enum Status { SUCCESS, ERROR, LOADING }
 
-  bool _isLoading;
+class FlowerCardState extends State<FlowerCard> {
+  Status _status;
   Flower _flower;
 
   @override
@@ -31,16 +32,17 @@ class FlowerCardState extends State<FlowerCard>{
 
   void getGoodInfo(String barcode) async {
     setState(() {
-      _isLoading = true;
+      _status = Status.LOADING;
     });
-
-    final Map<String, String> headers = {'Authorization': 'Basic dXNlcjo='};
 
     final response = await http.get(
         ConntectionSettings.serverPath + 'price?barcode=$barcode',
         headers: ConntectionSettings.headers);
 
     if (response.statusCode != 200) {
+      setState(() {
+        _status = Status.ERROR;
+      });
       return;
     }
 
@@ -55,7 +57,7 @@ class FlowerCardState extends State<FlowerCard>{
         variety: map['variety'],
         country: map['country'],
         color: map['color'],
-        regularPrice: map['regularPrice'],
+        regularPrice: map['regularPrice'].toDouble(),
         photoPath: map['photoPath'],
         delicious: map['delicious'],
         sale: map['sale'],
@@ -64,12 +66,12 @@ class FlowerCardState extends State<FlowerCard>{
 
     setState(() {
       _flower = flower;
-      _isLoading = false;
+      _status = Status.SUCCESS;
     });
   }
 
   Widget _valueWidget(String title, String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return SizedBox();
     }
 
@@ -98,12 +100,18 @@ class FlowerCardState extends State<FlowerCard>{
     );
   }
 
-  Widget _priceTag(String price) {
+  Widget _priceTag() {
+    Color color = Theme.of(context).primaryColor;
+    if (_flower.fixPrice) {
+      color = Colors.amber;
+    }
+
     return Center(
       child: Container(
-        color: Theme.of(context).primaryColor,
+        margin: EdgeInsets.symmetric(vertical: 4.0),
+        color: color,
         child: Text(
-          '${price} ₽',
+          '${_flower.regularPrice} ₽',
           style: TextStyle(
               color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
@@ -116,39 +124,38 @@ class FlowerCardState extends State<FlowerCard>{
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          _tag(_flower.delicious, 'Delicious'),
-          _tag(_flower.sale, 'Sale'),
-          _tag(_flower.premium, 'Premium')
-        ],
+        children: <Widget>[_actionTag(), _premiumTag()],
       ),
     );
   }
 
-  Widget _tag(bool value, String text) {
-    if (value)
-      return Container(
-        margin: EdgeInsets.all(4.0),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          child: Container(
-            padding: EdgeInsets.all(4.0),
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+  Widget _premiumTag() {
+    if (_flower.premium) {
+      return Image.asset(
+        'assets/premium.jpg',
+        height: 22,
       );
-    else
+    } else {
       return SizedBox();
+    }
   }
 
-  Widget _bodyWidget(){
-    if(_isLoading || _flower == null){
+  Widget _actionTag() {
+    if (_flower.sale) {
+      return Image.asset(
+        'assets/action.png',
+        height: 22,
+      );
+    } else {
+      return SizedBox();
+    }
+  }
+
+  Widget _bodyWidget() {
+    if (_status == Status.LOADING || _flower == null) {
       return Center(child: CircularProgressIndicator());
+    } else if (_status == Status.ERROR) {
+      return Center(child: Text('Server error'));
     }
 
     return ListView(
@@ -162,7 +169,7 @@ class FlowerCardState extends State<FlowerCard>{
           ),
         ),
         _tagBar(),
-        _priceTag(_flower.regularPrice.toString()),
+        _priceTag(),
         _valueWidget('Barcode', _flower.barcode),
         _valueWidget('Description', _flower.description),
         _valueWidget('Genus', _flower.genus),
@@ -177,8 +184,15 @@ class FlowerCardState extends State<FlowerCard>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Price checker'),),
-        body: _bodyWidget()
+      appBar: AppBar(
+        title: Text('Price checker'),
+      ),
+      body: _bodyWidget(),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.undo),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
     );
   }
 }
