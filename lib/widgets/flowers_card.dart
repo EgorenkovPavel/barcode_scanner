@@ -5,11 +5,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import '../objects/flower.dart';
+import '../ConnectionSettings.dart';
 
 class FlowerCard extends StatefulWidget {
   final String barcode;
 
-  FlowerCard(this.barcode)
+  FlowerCard(this.barcode);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,8 +37,8 @@ class FlowerCardState extends State<FlowerCard>{
     final Map<String, String> headers = {'Authorization': 'Basic dXNlcjo='};
 
     final response = await http.get(
-        'http://msavelev/UT11_PE/ru_RU/hs/pricechecker/price?barcode=$barcode',
-        headers: headers);
+        ConntectionSettings.serverPath + 'price?barcode=$barcode',
+        headers: ConntectionSettings.headers);
 
     if (response.statusCode != 200) {
       return;
@@ -79,7 +80,7 @@ class FlowerCardState extends State<FlowerCard>{
           Flexible(
             child: Text(
               title,
-              style: TextStyle(fontSize: 18),
+              style: Theme.of(context).textTheme.caption,
             ),
             flex: 1,
             fit: FlexFit.tight,
@@ -87,9 +88,9 @@ class FlowerCardState extends State<FlowerCard>{
           Flexible(
             child: Text(
               value,
-              style: TextStyle(fontSize: 18),
+              style: Theme.of(context).textTheme.body1,
             ),
-            flex: 1,
+            flex: 2,
             fit: FlexFit.tight,
           ),
         ],
@@ -100,7 +101,7 @@ class FlowerCardState extends State<FlowerCard>{
   Widget _priceTag(String price) {
     return Center(
       child: Container(
-        color: Colors.orange,
+        color: Theme.of(context).primaryColor,
         child: Text(
           '${price} ₽',
           style: TextStyle(
@@ -156,7 +157,8 @@ class FlowerCardState extends State<FlowerCard>{
         Center(
           child: Text(
             _flower.title,
-            style: TextStyle(fontSize: 20),
+            style: Theme.of(context).textTheme.display1,
+            textAlign: TextAlign.center,
           ),
         ),
         _tagBar(),
