@@ -37,8 +37,8 @@ class FlowerCardState extends State<FlowerCard> {
     });
 
     final response = await http.get(
-        ConntectionSettings.serverPath + 'price?barcode=$barcode',
-        headers: ConntectionSettings.headers);
+        ConnectionSettings.serverPath + 'price?barcode=$barcode',
+        headers: ConnectionSettings.headers);
 
     if (response.statusCode != 200) {
       setState(() {
@@ -174,7 +174,7 @@ class FlowerCardState extends State<FlowerCard> {
       children: <Widget>[
         FadeInImage(
           placeholder: AssetImage('assets/sample_product.png'),
-          image: NetworkImage(_flower.photoPath),
+          image: NetworkImage(_flower.photoPath, headers: ConnectionSettings.headers),
           height: 300.0,
           fit: BoxFit.cover,
         ),
