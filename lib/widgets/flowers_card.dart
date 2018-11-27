@@ -172,9 +172,11 @@ class FlowerCardState extends State<FlowerCard> {
 
     return ListView(
       children: <Widget>[
-        Image.network(
-          _flower.photoPath,
-          headers: ConntectionSettings.headers,
+        FadeInImage(
+          placeholder: AssetImage('assets/sample_product.png'),
+          image: NetworkImage(_flower.photoPath),
+          height: 300.0,
+          fit: BoxFit.cover,
         ),
         Center(
           child: Text(
