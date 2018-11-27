@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import './Localization.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dart:async';
 import './widgets/flowers_card.dart';
 
 void main() {
   runApp(MaterialApp(
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context).title,
+      localizationsDelegates: [
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''),
+        const Locale('ru', ''),
+      ],
       theme: ThemeData(
           primarySwatch: Colors.orange,
           textTheme: TextTheme(button: TextStyle(color: Colors.white))),
@@ -29,7 +42,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Price checker'),
+        title: Text(AppLocalizations.of(context).priceChecker),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -38,50 +51,50 @@ class MyAppState extends State<MyApp> {
             children: <Widget>[
               Image.asset('assets/logo7fl.jpg'),
               Form(
-                  key: _formKey,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: TextFormField(
-                            controller: controller,
-                            decoration:
-                                InputDecoration(labelText: 'Enter barcode'),
-                            maxLength: 13,
-                            keyboardType: TextInputType.number,
-                            validator: (String value) {
-                              if (value.length < 13) {
-                                return 'Barcode has length 13 symbols';
-                              }
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 16.0,
-                        ),
-                        RaisedButton(
-                          child: Text(
-                            'SEARCH',
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              Navigator.of(context).push(
-                                  MaterialPageRoute<Null>(
-                                      builder: (BuildContext context) {
-                                return FlowerCard(controller.text);
-                              }));
+                key: _formKey,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          controller: controller,
+                          decoration:
+                              InputDecoration(labelText: AppLocalizations.of(context).barcodeSearchFieldTitle),
+                          maxLength: 13,
+                          keyboardType: TextInputType.number,
+                          validator: (String value) {
+                            if (value.length < 13) {
+                              return AppLocalizations.of(context).errorBarcodeLength;
                             }
                           },
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                      SizedBox(
+                        width: 16.0,
+                      ),
+                      RaisedButton(
+                        child: Text(
+                          AppLocalizations.of(context).search.toUpperCase(),
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            Navigator.of(context).push(MaterialPageRoute<Null>(
+                                builder: (BuildContext context) {
+                              return FlowerCard(controller.text);
+                            }));
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               RaisedButton(
                 child: Text(
-                  'SCAN',
+                  AppLocalizations.of(context).scan.toUpperCase(),
                   style: Theme.of(context).textTheme.button,
                 ),
                 color: Theme.of(context).primaryColor,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../Localization.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -102,20 +103,31 @@ class FlowerCardState extends State<FlowerCard> {
 
   Widget _priceTag() {
     Color color = Theme.of(context).primaryColor;
+    Color textColor = Colors.white;
     if (_flower.fixPrice) {
       color = Colors.amber;
     }
 
     return Center(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4.0),
-        color: color,
-        child: Text(
-          '${_flower.regularPrice} ₽',
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 4.0),
+            color: color,
+            child: Text(
+              '${_flower.regularPrice} ₽',
+              style: TextStyle(
+                  color: textColor, fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+          ),
+          _flower.fixPrice
+              ? Text(
+                  AppLocalizations.of(context).fixPrice,
+                  style: Theme.of(context).textTheme.caption,
+                )
+              : SizedBox(),
+        ],
       ),
     );
   }
@@ -124,7 +136,7 @@ class FlowerCardState extends State<FlowerCard> {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[_actionTag(), _premiumTag()],
+        children: <Widget>[_premiumTag(), _actionTag()],
       ),
     );
   }
@@ -152,7 +164,7 @@ class FlowerCardState extends State<FlowerCard> {
   }
 
   Widget _bodyWidget() {
-    if (_status == Status.LOADING || _flower == null) {
+    if (_status == Status.LOADING) {
       return Center(child: CircularProgressIndicator());
     } else if (_status == Status.ERROR) {
       return Center(child: Text('Server error'));
@@ -160,7 +172,10 @@ class FlowerCardState extends State<FlowerCard> {
 
     return ListView(
       children: <Widget>[
-        Image.network(_flower.photoPath),
+        Image.network(
+          _flower.photoPath,
+          headers: ConntectionSettings.headers,
+        ),
         Center(
           child: Text(
             _flower.title,
@@ -170,13 +185,14 @@ class FlowerCardState extends State<FlowerCard> {
         ),
         _tagBar(),
         _priceTag(),
-        _valueWidget('Barcode', _flower.barcode),
-        _valueWidget('Description', _flower.description),
-        _valueWidget('Genus', _flower.genus),
-        _valueWidget('Type', _flower.type),
-        _valueWidget('Variety', _flower.variety),
-        _valueWidget('Country', _flower.country),
-        _valueWidget('Color', _flower.color),
+        _valueWidget(AppLocalizations.of(context).barcode, _flower.barcode),
+        _valueWidget(
+            AppLocalizations.of(context).description, _flower.description),
+        _valueWidget(AppLocalizations.of(context).genus, _flower.genus),
+        _valueWidget(AppLocalizations.of(context).type, _flower.type),
+        _valueWidget(AppLocalizations.of(context).variety, _flower.variety),
+        _valueWidget(AppLocalizations.of(context).country, _flower.country),
+        _valueWidget(AppLocalizations.of(context).color, _flower.color),
       ],
     );
   }
@@ -185,7 +201,7 @@ class FlowerCardState extends State<FlowerCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Price checker'),
+        title: Text(AppLocalizations.of(context).priceChecker),
       ),
       body: _bodyWidget(),
       floatingActionButton: FloatingActionButton(
