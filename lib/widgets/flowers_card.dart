@@ -61,7 +61,7 @@ class FlowerCardState extends State<FlowerCard> {
         regularPrice: map['regularPrice'].toDouble(),
         photoPath: map['photoPath'],
         delicious: map['delicious'],
-        sale: map['sale'],
+        sale: map['action'],
         premium: map['premium'],
         fixPrice: map['fixPrice']);
 
@@ -174,7 +174,8 @@ class FlowerCardState extends State<FlowerCard> {
       children: <Widget>[
         FadeInImage(
           placeholder: AssetImage('assets/sample_product.png'),
-          image: NetworkImage(_flower.photoPath, headers: ConnectionSettings.headers),
+          image: NetworkImage(_flower.photoPath,
+              headers: ConnectionSettings.headers),
           height: 300.0,
           fit: BoxFit.cover,
         ),
