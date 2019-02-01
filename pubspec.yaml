@@ -21,9 +21,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  barcode_scan: ^0.0.7
-  http: ^0.11.3+17
-  connectivity: ^0.3.2
+  barcode_scan: ^0.0.8
+  http: ^0.12.0
+  connectivity: ^0.4.0+1
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +47,7 @@ flutter:
     - assets/premium.jpg
     - assets/action.png
     - assets/sample_product.png
+    - assets/barcode-scan.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

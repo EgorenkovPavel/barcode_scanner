@@ -21,7 +21,8 @@ void main() {
         const Locale('ru', ''),
       ],
       theme: ThemeData(
-          primarySwatch: Colors.orange,
+          primarySwatch: Colors.lightGreen,
+          accentColor: Colors.orange,
           textTheme: TextTheme(button: TextStyle(color: Colors.white))),
       home: MyApp()));
 }
@@ -78,7 +79,7 @@ class MyAppState extends State<MyApp> {
                           AppLocalizations.of(context).search.toUpperCase(),
                           style: Theme.of(context).textTheme.button,
                         ),
-                        color: Theme.of(context).primaryColor,
+                        color: Theme.of(context).accentColor,
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             Navigator.of(context).push(MaterialPageRoute<Null>(
@@ -97,22 +98,29 @@ class MyAppState extends State<MyApp> {
                   AppLocalizations.of(context).scan.toUpperCase(),
                   style: Theme.of(context).textTheme.button,
                 ),
-                color: Theme.of(context).primaryColor,
-                onPressed: () {
-                  scan().then((String barcode) {
-                    if (barcode.isEmpty) return;
-                    Navigator.of(context).push(MaterialPageRoute<Null>(
-                        builder: (BuildContext context) {
-                      return FlowerCard(barcode);
-                    }));
-                  });
-                },
+                color: Theme.of(context).accentColor,
+                onPressed: scanBarcode
               )
             ],
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Image.asset("assets/barcode-scan.png"),
+          onPressed: scanBarcode
+      ),
     );
+  }
+
+  void scanBarcode() {
+    scan().then((String barcode) {
+      if (barcode.isEmpty) return;
+      Navigator.of(context)
+          .push(MaterialPageRoute<Null>(
+          builder: (BuildContext context) {
+            return FlowerCard(barcode);
+          }));
+    });
   }
 
   Future<String> scan() async {
