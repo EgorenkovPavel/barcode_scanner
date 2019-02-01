@@ -36,10 +36,17 @@ class FlowerCardState extends State<FlowerCard> {
       _status = Status.LOADING;
     });
 
-    final response = await http.get(
-        ConnectionSettings.serverPath + 'price?barcode=$barcode',
-        headers: ConnectionSettings.headers);
-
+    var response;
+    try {
+      response = await http.get(
+          ConnectionSettings.serverPath + 'price?barcode=$barcode',
+          headers: ConnectionSettings.headers);
+    }catch(e){
+      setState(() {
+        _status = Status.ERROR;
+      });
+      return;
+    }
     if (response.statusCode != 200) {
       setState(() {
         _status = Status.ERROR;
@@ -102,10 +109,11 @@ class FlowerCardState extends State<FlowerCard> {
   }
 
   Widget _priceTag() {
-    Color color = Theme.of(context).primaryColor;
-    Color textColor = Colors.white;
+    Color backgroundColor = Colors.transparent;
+    Color textColor = Theme.of(context).primaryTextTheme.title.color;
     if (_flower.fixPrice) {
-      color = Colors.amber;
+      backgroundColor = Theme.of(context).primaryColor;
+      textColor = Colors.white;
     }
 
     return Center(
@@ -113,7 +121,7 @@ class FlowerCardState extends State<FlowerCard> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.symmetric(vertical: 4.0),
-            color: color,
+            color: backgroundColor,
             child: Text(
               '${_flower.regularPrice} ₽',
               style: TextStyle(
