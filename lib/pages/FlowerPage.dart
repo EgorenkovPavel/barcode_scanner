@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import '../Localization.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-import 'dart:async';
-import 'dart:convert';
-
-import '../objects/flower.dart';
 import '../ConnectionSettings.dart';
+import '../Localization.dart';
+import '../MainModel.dart';
+import '../objects/flower.dart';
 
-class FlowerCard extends StatefulWidget {
+class FlowerPage extends StatefulWidget {
   final String barcode;
+  final Function getFlower;
 
-  FlowerCard(this.barcode);
+  FlowerPage(this.barcode, this.getFlower);
 
   @override
   State<StatefulWidget> createState() {
-    return FlowerCardState();
+    return FlowerPageState();
   }
 }
 
 enum Status { SUCCESS, ERROR, LOADING }
 
-class FlowerCardState extends State<FlowerCard> {
+class FlowerPageState extends State<FlowerPage> {
   Status _status;
   Flower _flower;
 
@@ -36,45 +35,15 @@ class FlowerCardState extends State<FlowerCard> {
       _status = Status.LOADING;
     });
 
-    var response;
-    try {
-      response = await http.get(
-          ConnectionSettings.serverPath + 'price?barcode=$barcode',
-          headers: ConnectionSettings.headers);
-    }catch(e){
-      setState(() {
-        _status = Status.ERROR;
-      });
-      return;
-    }
-    if (response.statusCode != 200) {
-      setState(() {
-        _status = Status.ERROR;
-      });
-      return;
-    }
-
-    Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
-
-    Flower flower = Flower(
-        title: map['title'],
-        barcode: map['barcode'],
-        description: map['description'],
-        genus: map['genus'],
-        type: map['type'],
-        variety: map['variety'],
-        country: map['country'],
-        color: map['color'],
-        regularPrice: map['regularPrice'].toDouble(),
-        photoPath: map['photoPath'],
-        delicious: map['delicious'],
-        sale: map['action'],
-        premium: map['premium'],
-        fixPrice: map['fixPrice']);
+    Flower flower = await widget.getFlower(widget.barcode);
 
     setState(() {
       _flower = flower;
-      _status = Status.SUCCESS;
+      if(flower == null){
+        _status = Status.ERROR;
+      }else{
+        _status = Status.SUCCESS;
+      }
     });
   }
 
@@ -210,16 +179,23 @@ class FlowerCardState extends State<FlowerCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).priceChecker),
-      ),
-      body: _bodyWidget(),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.undo),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model){
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context).priceChecker),
+          ),
+          body: _bodyWidget(),
+          floatingActionButton: FloatingActionButton(
+              child: Image.asset("assets/barcode-scan.png"),
+              onPressed: () {
+                model.scanBarcodeOnCamera().then((String barcode) {
+                  if (barcode.isEmpty) return;
+                  Navigator.popAndPushNamed(context, '/flowers/$barcode');
+                });
+              }),
+        );
+      },
     );
-  }
+   }
 }
