@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+
 import '../ConnectionSettings.dart';
 import '../Localization.dart';
 import '../MainModel.dart';
@@ -9,6 +10,7 @@ import '../objects/flower.dart';
 class FlowerPage extends StatefulWidget {
   final String barcode;
   final Function getFlower;
+  String errorMessage;
 
   FlowerPage(this.barcode, this.getFlower);
 
@@ -23,6 +25,7 @@ enum Status { SUCCESS, ERROR, LOADING }
 class FlowerPageState extends State<FlowerPage> {
   Status _status;
   Flower _flower;
+  String _errorMessage;
 
   @override
   void initState() {
@@ -35,7 +38,16 @@ class FlowerPageState extends State<FlowerPage> {
       _status = Status.LOADING;
     });
 
-    Flower flower = await widget.getFlower(widget.barcode);
+    Flower flower = null;
+    try {
+      flower = await widget.getFlower(widget.barcode);
+    }catch(e){
+      setState(() {
+        _errorMessage = e.toString();
+        _status = Status.ERROR;
+      });
+      return;
+    }
 
     setState(() {
       _flower = flower;
@@ -144,7 +156,7 @@ class FlowerPageState extends State<FlowerPage> {
     if (_status == Status.LOADING) {
       return Center(child: CircularProgressIndicator());
     } else if (_status == Status.ERROR) {
-      return Center(child: Text('Server error'));
+      return Center(child: Text(_errorMessage));
     }
 
     return ListView(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:connectivity/connectivity.dart';
 
 import './Localization.dart';
 import './MainModel.dart';
@@ -20,6 +21,19 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   MainModel _model = new MainModel();
+  var subscription;
+
+  @override
+  void initState() {
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      _model.connected(result != ConnectivityResult.none);
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {

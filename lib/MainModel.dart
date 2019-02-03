@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import './objects/flower.dart';
@@ -10,7 +11,13 @@ import 'package:http/http.dart' as http;
 
 class MainModel extends Model{
 
+  bool _connected;
+
   Map<String, Flower> _flowers = {};
+
+  connected(bool value) {
+    _connected = value;
+  }
 
   Future<String> scanBarcodeOnCamera() async {
     try {
@@ -35,17 +42,21 @@ class MainModel extends Model{
       return _flowers[barcode];
     }
 
+    if(!_connected){
+      throw Exception('No internet connection. Connect to internet and try again');
+    }
+
     var response;
     try {
       response = await http.get(
           ConnectionSettings.serverPath + 'price?barcode=$barcode',
           headers: ConnectionSettings.headers);
     }catch(e){
-      return null;
+      throw Exception('Connection error. Check internet connection');
     }
 
     if (response.statusCode != 200) {
-      return null;
+      throw Exception('Server error. Try later');
     }
 
     Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
