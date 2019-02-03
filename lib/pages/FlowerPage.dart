@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-
 import '../ConnectionSettings.dart';
 import '../Localization.dart';
 import '../MainModel.dart';
@@ -203,7 +202,7 @@ class FlowerPageState extends State<FlowerPage> {
               onPressed: () {
                 model.scanBarcodeOnCamera().then((String barcode) {
                   if (barcode.isEmpty) return;
-                  Navigator.popAndPushNamed(context, '/flowers/$barcode');
+                  Navigator.pushReplacementNamed(context, '/flowers/$barcode');
                 });
               }),
         );

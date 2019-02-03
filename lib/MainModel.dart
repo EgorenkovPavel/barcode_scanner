@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:connectivity/connectivity.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
-import './objects/flower.dart';
-import './ConnectionSettings.dart';
 import 'dart:convert';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoped_model/scoped_model.dart';
+
+import './ConnectionSettings.dart';
+import './objects/flower.dart';
 
 class MainModel extends Model{
 
@@ -18,6 +18,8 @@ class MainModel extends Model{
   connected(bool value) {
     _connected = value;
   }
+
+  Map<String, Flower> get flowers => _flowers;
 
   Future<String> scanBarcodeOnCamera() async {
     try {
@@ -78,6 +80,7 @@ class MainModel extends Model{
         fixPrice: map['fixPrice']);
 
     _flowers[barcode] = flower;
+    notifyListeners();
 
     return flower;
   }

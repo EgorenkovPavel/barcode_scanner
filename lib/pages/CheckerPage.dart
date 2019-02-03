@@ -25,7 +25,6 @@ class CheckerPageState extends State<CheckerPage> {
           title: Text(AppLocalizations.of(context).priceChecker),
         ),
         body: Center(
-          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -73,7 +72,6 @@ class CheckerPageState extends State<CheckerPage> {
                 ),
               ],
             ),
-          ),
         ),
         floatingActionButton: FloatingActionButton(
             child: Image.asset("assets/barcode-scan.png"),
