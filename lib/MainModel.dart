@@ -14,12 +14,15 @@ class MainModel extends Model{
   bool _connected;
 
   Map<String, Flower> _flowers = {};
+  var _flowerList = [];
 
   connected(bool value) {
     _connected = value;
   }
 
   Map<String, Flower> get flowers => _flowers;
+
+  get flowerList => _flowerList;
 
   Future<String> scanBarcodeOnCamera() async {
     try {
@@ -80,6 +83,7 @@ class MainModel extends Model{
         fixPrice: map['fixPrice']);
 
     _flowers[barcode] = flower;
+    _flowerList.insert(0, flower);
     notifyListeners();
 
     return flower;
