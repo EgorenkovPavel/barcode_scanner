@@ -41,15 +41,17 @@ class CheckerPageState extends State<CheckerPage> {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Flexible(
+                          Container(
+                            width: 150.0,
                             child: TextFormField(
                               textInputAction: TextInputAction.search,
                               onFieldSubmitted: (_){_searchByText();},
                               controller: controller,
                               decoration: InputDecoration(
                                   labelText: AppLocalizations.of(context)
-                                      .barcodeSearchFieldTitle),
+                                      .barcodeSearchFieldTitle, ),
                               maxLength: 13,
                               keyboardType: TextInputType.number,
                               validator: (String value) {
@@ -90,5 +92,4 @@ class CheckerPageState extends State<CheckerPage> {
       );
     });
   }
-
 }
