@@ -101,17 +101,20 @@ class FlowerCard extends StatelessWidget{
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        FadeInImage(
-          placeholder: AssetImage('assets/sample_product.png'),
-          image: NetworkImage(_flower.photoPath,
-              headers: ConnectionSettings.headers),
-          height: 300.0,
-          fit: BoxFit.cover,
-        ),
+  Widget _photo(){
+    return FadeInImage(
+      placeholder: AssetImage('assets/sample_product.png'),
+      image: NetworkImage(_flower.photoPath,
+          headers: ConnectionSettings.headers),
+      //width: 300.0,
+      height: 300.0,
+      fit: BoxFit.cover,
+    );
+  }
+
+  Widget _info(BuildContext context){
+    return Column(
+        children: <Widget>[
         Center(
           child: Text(
             _flower.title,
@@ -119,8 +122,8 @@ class FlowerCard extends StatelessWidget{
             textAlign: TextAlign.center,
           ),
         ),
-        _tagBar(),
-        _priceTag(context),
+          _tagBar(),
+          _priceTag(context),
         _valueWidget(context, AppLocalizations.of(context).barcode, _flower.barcode),
         _valueWidget(context,
             AppLocalizations.of(context).description, _flower.description),
@@ -129,8 +132,33 @@ class FlowerCard extends StatelessWidget{
         _valueWidget(context, AppLocalizations.of(context).variety, _flower.variety),
         _valueWidget(context, AppLocalizations.of(context).country, _flower.country),
         _valueWidget(context, AppLocalizations.of(context).color, _flower.color),
-      ],
+        ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery
+        .of(context)
+        .orientation == Orientation.portrait) {
+      return ListView(
+        children: <Widget>[
+          _photo(),
+          _info(context),
+        ],
+      );
+    } else {
+      return ListView(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                _photo(),
+                Flexible(child: _info(context)),
+              ],
+            ),
+          ]
+      );
+    }
   }
 
 }
