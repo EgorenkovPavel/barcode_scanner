@@ -23,7 +23,10 @@ class FlowerList extends StatelessWidget {
               ),
               title: Text(_flower.title),
               trailing:
-                  Text('${_flower.regularPrice} ₽'), //replace with price widget
+                  Text('${_flower.regularPrice} ₽'),
+              onTap: (){
+                Navigator.pushNamed(context, '/flowers/${_flower.barcode}');
+              },//replace with price widget
             );
           },
         );
