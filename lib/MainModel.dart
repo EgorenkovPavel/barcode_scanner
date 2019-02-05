@@ -53,9 +53,9 @@ class MainModel extends Model{
 
     var response;
     try {
-      response = await http.get(
-          ConnectionSettings.serverPath + 'price?barcode=$barcode',
-          headers: ConnectionSettings.headers);
+        var body = json.encode({'barcode': barcode});
+        Map<String, String> headers = {'Content-Type': 'application/json'};
+        response = await http.post(ConnectionSettings.serverPath, body: body, headers: headers);
     }catch(e){
       throw Exception('Connection error. Check internet connection');
     }
