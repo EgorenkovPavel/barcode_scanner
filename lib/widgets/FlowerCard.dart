@@ -1,4 +1,5 @@
 import 'package:barcode_scanner/objects/flower.dart';
+import 'package:barcode_scanner/widgets/Price.dart';
 import 'package:flutter/material.dart';
 import '../ConnectionSettings.dart';
 import '../Localization.dart';
@@ -32,32 +33,6 @@ class FlowerCard extends StatelessWidget{
             ),
             flex: 2,
             fit: FlexFit.tight,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _priceTag(BuildContext context) {
-    Color backgroundColor = Colors.transparent;
-    Color textColor = Theme.of(context).primaryTextTheme.title.color;
-    if (_flower.fixPrice) {
-      backgroundColor = Theme.of(context).accentColor;
-      textColor = Colors.white;
-    }
-
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 4.0),
-            color: backgroundColor,
-            child: Text(
-              '${_flower.regularPrice} ₽',
-              style: TextStyle(
-                  color: textColor, fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
           ),
         ],
       ),
@@ -133,7 +108,7 @@ class FlowerCard extends StatelessWidget{
           ),
         ),
         _tagBar(),
-        _priceTag(context),
+        Price(_flower, 24),
         _priceInfo(context),
         _valueWidget(context, AppLocalizations
             .of(context)

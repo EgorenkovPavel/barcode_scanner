@@ -1,3 +1,4 @@
+import 'package:barcode_scanner/widgets/Price.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -22,8 +23,7 @@ class FlowerList extends StatelessWidget {
               ),
               title: Text(_flower.title),
               subtitle: Text(_flower.barcode),
-              trailing:
-                  Text('${_flower.regularPrice} ₽'),
+              trailing: Price(_flower, 16),
               onTap: (){
                 Navigator.pushNamed(context, '/flowers/${_flower.barcode}');
               },//replace with price widget

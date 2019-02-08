@@ -80,7 +80,7 @@ class MainModel extends Model{
         delicious: map['delicious'],
         sale: map['action'],
         premium: map['premium'],
-        fixPrice: map['fixPrice']);
+        fixPrice: true);//map['fixPrice']);
 
     _flowers[barcode] = flower;
     _flowerList.insert(0, flower);
@@ -88,4 +88,6 @@ class MainModel extends Model{
 
     return flower;
   }
+
+
 }
