@@ -42,7 +42,7 @@ class FlowerCard extends StatelessWidget{
     Color backgroundColor = Colors.transparent;
     Color textColor = Theme.of(context).primaryTextTheme.title.color;
     if (_flower.fixPrice) {
-      backgroundColor = Theme.of(context).primaryColor;
+      backgroundColor = Theme.of(context).accentColor;
       textColor = Colors.white;
     }
 
@@ -59,15 +59,22 @@ class FlowerCard extends StatelessWidget{
             ),
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
           ),
-          _flower.fixPrice
-              ? Text(
-            AppLocalizations.of(context).fixPrice,
-            style: Theme.of(context).textTheme.caption,
-          )
-              : SizedBox(),
         ],
       ),
     );
+  }
+
+  Widget _priceInfo(context) {
+    return _flower.fixPrice
+        ? Text(
+      AppLocalizations
+          .of(context)
+          .fixPrice,
+      style: Theme
+          .of(context)
+          .textTheme
+          .caption,
+    ) : SizedBox();
   }
 
   Widget _tagBar() {
@@ -112,27 +119,45 @@ class FlowerCard extends StatelessWidget{
     );
   }
 
-  Widget _info(BuildContext context){
+  Widget _info(BuildContext context) {
     return Column(
-        children: <Widget>[
+      children: <Widget>[
         Center(
           child: Text(
             _flower.title,
-            style: Theme.of(context).textTheme.display1,
+            style: Theme
+                .of(context)
+                .textTheme
+                .display1,
             textAlign: TextAlign.center,
           ),
         ),
-          _tagBar(),
-          _priceTag(context),
-        _valueWidget(context, AppLocalizations.of(context).barcode, _flower.barcode),
+        _tagBar(),
+        _priceTag(context),
+        _priceInfo(context),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .barcode, _flower.barcode),
         _valueWidget(context,
-            AppLocalizations.of(context).description, _flower.description),
-        _valueWidget(context, AppLocalizations.of(context).genus, _flower.genus),
-        _valueWidget(context, AppLocalizations.of(context).type, _flower.type),
-        _valueWidget(context, AppLocalizations.of(context).variety, _flower.variety),
-        _valueWidget(context, AppLocalizations.of(context).country, _flower.country),
-        _valueWidget(context, AppLocalizations.of(context).color, _flower.color),
-        ],
+            AppLocalizations
+                .of(context)
+                .description, _flower.description),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .genus, _flower.genus),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .type, _flower.type),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .variety, _flower.variety),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .country, _flower.country),
+        _valueWidget(context, AppLocalizations
+            .of(context)
+            .color, _flower.color),
+      ],
     );
   }
 

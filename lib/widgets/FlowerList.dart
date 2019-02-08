@@ -11,7 +11,6 @@ class FlowerList extends StatelessWidget {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return ListView.builder(
-          shrinkWrap: true,
           itemCount: model.flowerList.length,
           itemBuilder: (BuildContext context, int position) {
             Flower _flower = model.flowerList[position];
@@ -22,6 +21,7 @@ class FlowerList extends StatelessWidget {
                     headers: ConnectionSettings.headers),
               ),
               title: Text(_flower.title),
+              subtitle: Text(_flower.barcode),
               trailing:
                   Text('${_flower.regularPrice} ₽'),
               onTap: (){

@@ -35,7 +35,10 @@ class CheckerPageState extends State<CheckerPage> {
         ),
         body: Column(
           children: <Widget>[
-            Image.asset('assets/logo7fl.jpg'),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Image.asset('assets/logo7fl.jpg'),
+            ),
             Form(
               key: _formKey,
               child: Container(
@@ -81,6 +84,15 @@ class CheckerPageState extends State<CheckerPage> {
                 ),
               ),
             ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Search history (${model.flowerList.length})', textAlign: TextAlign.start, style: Theme.of(context).textTheme.caption,),
+                ),
+              ],
+            ),
+            Divider(),
             Expanded(child: Container(child: FlowerList())),
           ],
         ),
