@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../ConnectionSettings.dart';
+import 'package:barcode_scanner/objects/ScanException.dart';
 import '../Localization.dart';
 import '../MainModel.dart';
 import '../objects/flower.dart';
 import '../widgets/FlowerCard.dart';
+import '../widgets/Error.dart';
 
 class FlowerPage extends StatefulWidget {
   final String barcode;
   final Function getFlower;
-  String errorMessage;
 
   FlowerPage(this.barcode, this.getFlower);
 
@@ -25,6 +25,7 @@ enum Status { SUCCESS, ERROR, LOADING }
 class FlowerPageState extends State<FlowerPage> {
   Status _status;
   Flower _flower;
+  String _errorTitle;
   String _errorMessage;
 
   @override
@@ -41,12 +42,19 @@ class FlowerPageState extends State<FlowerPage> {
     Flower flower = null;
     try {
       flower = await widget.getFlower(widget.barcode);
-    }catch(e){
+    }on ScanException catch(e){
       setState(() {
-        _errorMessage = e.toString();
+        _errorTitle = e.title;
+        _errorMessage = e.message;
         _status = Status.ERROR;
       });
       return;
+    }catch (e){
+      setState(() {
+        _errorTitle = 'Unknown error';
+        _errorMessage = e.toString();
+        _status = Status.ERROR;
+      });
     }
 
     setState(() {
@@ -63,10 +71,10 @@ class FlowerPageState extends State<FlowerPage> {
     if (_status == Status.LOADING) {
       return Center(child: CircularProgressIndicator());
     } else if (_status == Status.ERROR) {
-      return Center(child: Text(_errorMessage));
+      return Error(_errorTitle, _errorMessage);
+    } else {
+      return FlowerCard(_flower);
     }
-
-    return FlowerCard(_flower);
   }
 
   @override

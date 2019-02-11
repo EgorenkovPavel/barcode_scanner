@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scanner/objects/ScanException.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
@@ -48,20 +49,20 @@ class MainModel extends Model{
     }
 
     if(!_connected){
-      throw Exception('No internet connection. Connect to internet and try again');
+      throw ScanException('No internet connection', 'Connect to internet and try again');
     }
 
-    var response;
+    http.Response response;
     try {
         var body = json.encode({'barcode': barcode});
         Map<String, String> headers = {'Content-Type': 'application/json'};
         response = await http.post(ConnectionSettings.serverPath, body: body, headers: headers);
     }catch(e){
-      throw Exception('Connection error. Check internet connection');
+      throw ScanException('Connection error', 'Check internet connection');
     }
 
     if (response.statusCode != 200) {
-      throw Exception('Server error. Try later');
+      throw ScanException('Server error',response.body);
     }
 
     Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
@@ -80,7 +81,8 @@ class MainModel extends Model{
         delicious: map['delicious'],
         sale: map['action'],
         premium: map['premium'],
-        fixPrice: map['fixPrice']);
+        fixPrice: map['fixPrice']
+    );
 
     _flowers[barcode] = flower;
     _flowerList.insert(0, flower);
@@ -88,6 +90,4 @@ class MainModel extends Model{
 
     return flower;
   }
-
-
 }
