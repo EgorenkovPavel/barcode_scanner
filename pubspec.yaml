@@ -23,7 +23,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   barcode_scan: ^0.0.8
   http: ^0.12.0
-  connectivity: ^0.4.0+1
+  connectivity: ^0.4.2
   scoped_model: ^1.0.1
 
 dev_dependencies:

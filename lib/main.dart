@@ -25,6 +25,9 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    Connectivity().checkConnectivity().then((ConnectivityResult result){
+      _model.connected(result != ConnectivityResult.none);
+    });
     subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       _model.connected(result != ConnectivityResult.none);
     });

@@ -12,7 +12,7 @@ import './objects/flower.dart';
 
 class MainModel extends Model{
 
-  bool _connected;
+  bool _connected = false;
 
   Map<String, Flower> _flowers = {};
   var _flowerList = [];
