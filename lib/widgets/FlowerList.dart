@@ -18,6 +18,7 @@ class FlowerList extends StatelessWidget {
 
             return ListTile(
               leading: CircleAvatar(
+                backgroundImage:  AssetImage('assets/sample_product.png'),
                 child: Image.network(_flower.photoPath,
                     headers: ConnectionSettings.headers),
               ),
