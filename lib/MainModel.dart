@@ -49,20 +49,21 @@ class MainModel extends Model{
     }
 
     if(!_connected){
-      throw ScanException('No internet connection', 'Connect to internet and try again');
+      throw ScanException(ExceptionType.NO_CONNECTION);
     }
 
     http.Response response;
     try {
-        var body = json.encode({'barcode': barcode});
-        Map<String, String> headers = {'Content-Type': 'application/json'};
-        response = await http.post(ConnectionSettings.serverPath, body: body, headers: headers);
-    }catch(e){
-      throw ScanException('Connection error', 'Check internet connection');
+      var body = json.encode({'barcode': barcode});
+      Map<String, String> headers = {'Content-Type': 'application/json'};
+      response = await http.post(
+          ConnectionSettings.serverPath, body: body, headers: headers);
+    } catch (e) {
+      throw ScanException(ExceptionType.CONNECTION_ERROR);
     }
 
     if (response.statusCode != 200) {
-      throw ScanException('Server error',response.body);
+      throw ScanException(ExceptionType.SERVER_ERROR);
     }
 
     Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));

@@ -1,13 +1,14 @@
 
 class ScanException implements Exception {
 
-  final String _title;
-  final String _message;
+  final ExceptionType _type;
 
-  ScanException(this._title, this._message);
+  ScanException(this._type);
 
-  String get message => _message;
+  ExceptionType get type => _type;
 
-  String get title => _title;
+}
 
+enum ExceptionType{
+  NO_CONNECTION, CONNECTION_ERROR, SERVER_ERROR, UNKNOWN_ERROR
 }

@@ -88,7 +88,11 @@ class CheckerPageState extends State<CheckerPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Search history (${model.flowerList.length})', textAlign: TextAlign.start, style: Theme.of(context).textTheme.caption,),
+                  child: Text(
+                    '${AppLocalizations.of(context).searchHistory} (${model.flowerList.length})',
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
               ],
             ),

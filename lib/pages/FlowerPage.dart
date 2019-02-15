@@ -25,8 +25,7 @@ enum Status { SUCCESS, ERROR, LOADING }
 class FlowerPageState extends State<FlowerPage> {
   Status _status;
   Flower _flower;
-  String _errorTitle;
-  String _errorMessage;
+  ExceptionType _errorType;
 
   @override
   void initState() {
@@ -44,15 +43,13 @@ class FlowerPageState extends State<FlowerPage> {
       flower = await widget.getFlower(widget.barcode);
     }on ScanException catch(e){
       setState(() {
-        _errorTitle = e.title;
-        _errorMessage = e.message;
+        _errorType = e.type;
         _status = Status.ERROR;
       });
       return;
     }catch (e){
       setState(() {
-        _errorTitle = 'Unknown error';
-        _errorMessage = e.toString();
+        _errorType = ExceptionType.UNKNOWN_ERROR;
         _status = Status.ERROR;
       });
     }
@@ -71,7 +68,7 @@ class FlowerPageState extends State<FlowerPage> {
     if (_status == Status.LOADING) {
       return Center(child: CircularProgressIndicator());
     } else if (_status == Status.ERROR) {
-      return Error(_errorTitle, _errorMessage);
+      return Error(_errorType);
     } else {
       return FlowerCard(_flower);
     }

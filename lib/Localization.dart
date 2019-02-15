@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:barcode_scanner/objects/ScanException.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,6 +30,16 @@ class AppLocalizations {
       'country': 'Country',
       'color': 'Color',
       'fix_price': 'No discounts',
+      'search_history': 'Search history',
+
+      'exception_title_no_connection': 'No internet connection',
+      'exception_title_connection_error': 'Connection error',
+      'exception_title_server_error': 'Server error',
+      'exception_title_unknown_error': 'Unknown error',
+      'exception_message_no_connection': 'Connect to internet and try again',
+      'exception_message_connection_error': 'Check internet connection',
+      'exception_message_server_error': 'Server error',
+      'exception_message_unknown_error': 'Unknown error',
     },
     'ru': {
       'title': '7Цветов',
@@ -45,6 +56,16 @@ class AppLocalizations {
       'country': 'Страна',
       'color': 'Цвет',
       'fix_price': 'Скидки не распространяются',
+      'search_history': 'История поиска',
+
+      'exception_title_no_connection': 'Нет доступа в интернет',
+      'exception_title_connection_error': 'Ошибка соединения',
+      'exception_title_server_error': 'Ошибка сервера',
+      'exception_title_unknown_error': 'Неизвестная ошибка',
+      'exception_message_no_connection': 'Подключитесь к интернету и попробуйте снова',
+      'exception_message_connection_error': 'Проверьте интернет соединение',
+      'exception_message_server_error': 'Сервер не отвечает. Попробуйте познее',
+      'exception_message_unknown_error': 'Попробуйте обновить приложение',
     },
   };
 
@@ -102,6 +123,28 @@ class AppLocalizations {
 
   String get fixPrice {
     return _localizedValues[locale.languageCode]['fix_price'];
+  }
+
+  String get searchHistory {
+    return _localizedValues[locale.languageCode]['search_history'];
+  }
+
+  String errorTitle(ExceptionType type){
+    switch (type){
+      case ExceptionType.NO_CONNECTION: return _localizedValues[locale.languageCode]['exception_title_no_connection'];
+      case ExceptionType.CONNECTION_ERROR: return _localizedValues[locale.languageCode]['exception_title_connection_error'];
+      case ExceptionType.SERVER_ERROR: return _localizedValues[locale.languageCode]['exception_title_server_error'];
+      case ExceptionType.UNKNOWN_ERROR: return _localizedValues[locale.languageCode]['exception_title_unknown_error'];
+    }
+  }
+
+  String errorMessage(ExceptionType type){
+    switch (type){
+      case ExceptionType.NO_CONNECTION: return _localizedValues[locale.languageCode]['exception_message_no_connection'];
+      case ExceptionType.CONNECTION_ERROR: return _localizedValues[locale.languageCode]['exception_message_connection_error'];
+      case ExceptionType.SERVER_ERROR: return _localizedValues[locale.languageCode]['exception_message_server_error'];
+      case ExceptionType.UNKNOWN_ERROR: return _localizedValues[locale.languageCode]['exception_message_unknown_error'];
+    }
   }
 }
 
