@@ -16,7 +16,7 @@ class CheckerPage extends StatefulWidget {
 class CheckerPageState extends State<CheckerPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController controller =
-      TextEditingController(text: '5500009866193');
+      TextEditingController();
 
   void _searchByText() {
     if (_formKey.currentState.validate()) {

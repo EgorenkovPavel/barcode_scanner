@@ -36,10 +36,12 @@ class AppLocalizations {
       'exception_title_connection_error': 'Connection error',
       'exception_title_server_error': 'Server error',
       'exception_title_unknown_error': 'Unknown error',
+      'exception_title_not_found': 'Product not found',
       'exception_message_no_connection': 'Connect to internet and try again',
       'exception_message_connection_error': 'Check internet connection',
       'exception_message_server_error': 'Server error',
       'exception_message_unknown_error': 'Unknown error',
+      'exception_message_not_found': 'Try another barcode',
     },
     'ru': {
       'title': '7Цветов',
@@ -62,10 +64,12 @@ class AppLocalizations {
       'exception_title_connection_error': 'Ошибка соединения',
       'exception_title_server_error': 'Ошибка сервера',
       'exception_title_unknown_error': 'Неизвестная ошибка',
+      'exception_title_not_found': 'Товар не найден',
       'exception_message_no_connection': 'Подключитесь к интернету и попробуйте снова',
       'exception_message_connection_error': 'Проверьте интернет соединение',
       'exception_message_server_error': 'Сервер не отвечает. Попробуйте познее',
       'exception_message_unknown_error': 'Попробуйте обновить приложение',
+      'exception_message_not_found': 'Попробуйте другой штрихкод',
     },
   };
 
@@ -135,6 +139,7 @@ class AppLocalizations {
       case ExceptionType.CONNECTION_ERROR: return _localizedValues[locale.languageCode]['exception_title_connection_error'];
       case ExceptionType.SERVER_ERROR: return _localizedValues[locale.languageCode]['exception_title_server_error'];
       case ExceptionType.UNKNOWN_ERROR: return _localizedValues[locale.languageCode]['exception_title_unknown_error'];
+      case ExceptionType.NOT_FOUND: return _localizedValues[locale.languageCode]['exception_title_not_found'];
     }
   }
 
@@ -144,6 +149,7 @@ class AppLocalizations {
       case ExceptionType.CONNECTION_ERROR: return _localizedValues[locale.languageCode]['exception_message_connection_error'];
       case ExceptionType.SERVER_ERROR: return _localizedValues[locale.languageCode]['exception_message_server_error'];
       case ExceptionType.UNKNOWN_ERROR: return _localizedValues[locale.languageCode]['exception_message_unknown_error'];
+      case ExceptionType.NOT_FOUND: return _localizedValues[locale.languageCode]['exception_message_not_found'];
     }
   }
 }
