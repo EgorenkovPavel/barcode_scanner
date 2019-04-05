@@ -43,6 +43,7 @@ class MyAppState extends State<MyApp> {
     return ScopedModel<MainModel>(
       model: _model,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         onGenerateTitle: (BuildContext context) =>
         AppLocalizations.of(context).title,
         localizationsDelegates: [
