@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import './CupertinoLocalization.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:connectivity/connectivity.dart';
 
@@ -50,6 +51,7 @@ class MyAppState extends State<MyApp> {
           const AppLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
+          const CupertinoLocalizationsDelegate(),
         ],
         supportedLocales: [
           const Locale('en', ''),
