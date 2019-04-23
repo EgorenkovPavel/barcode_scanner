@@ -62,6 +62,10 @@ class MainModel extends Model{
       throw ScanException(ExceptionType.CONNECTION_ERROR);
     }
 
+    if (response.statusCode == 400) {
+      throw ScanException(ExceptionType.WRONG_FORMAT);
+    }
+
     if (response.statusCode == 404) {
       throw ScanException(ExceptionType.NOT_FOUND);
     }
