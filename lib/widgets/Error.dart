@@ -16,7 +16,10 @@ class Error extends StatelessWidget{
         children: <Widget>[
         Text(AppLocalizations.of(context).errorTitle(_scanException.type), style: Theme.of(context).primaryTextTheme.title,),
         Text(AppLocalizations.of(context).errorMessage(_scanException.type), style: Theme.of(context).primaryTextTheme.body1,),
-        Text('${_scanException.barcode}', style: Theme.of(context).primaryTextTheme.caption,)
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('${_scanException.barcode}', style: Theme.of(context).primaryTextTheme.caption,),
+        )
       ],
       ),
     );
