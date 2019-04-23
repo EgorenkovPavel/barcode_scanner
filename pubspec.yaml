@@ -25,6 +25,7 @@ dependencies:
   http: ^0.12.0
   connectivity: ^0.4.2
   scoped_model: ^1.0.1
+  keyboard_actions: ^1.0.4
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../Localization.dart';
 import '../MainModel.dart';
@@ -15,8 +16,8 @@ class CheckerPage extends StatefulWidget {
 
 class CheckerPageState extends State<CheckerPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController controller =
-      TextEditingController();
+  final TextEditingController controller = TextEditingController();
+  final FocusNode _nodeSearch = FocusNode();
 
   void _searchByText() {
     if (_formKey.currentState.validate()) {
@@ -33,72 +34,86 @@ class CheckerPageState extends State<CheckerPage> {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context).priceChecker),
         ),
-        body: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Image.asset('assets/logo7fl.jpg'),
-            ),
-            Form(
-              key: _formKey,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        textInputAction: TextInputAction.search,
-                        onFieldSubmitted: (_) {
+        body: FormKeyboardActions(
+          keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+          nextFocus: false,
+          actions: [
+            KeyboardAction(
+              focusNode: _nodeSearch,
+              closeWidget: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.close),
+              ),
+            )
+          ],
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Image.asset('assets/logo7fl.jpg'),
+              ),
+              Form(
+                key: _formKey,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          textInputAction: TextInputAction.search,
+                          focusNode: _nodeSearch,
+                          onFieldSubmitted: (_) {
+                            _searchByText();
+                          },
+                          controller: controller,
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)
+                                .barcodeSearchFieldTitle,
+                          ),
+                          maxLength: 13,
+                          keyboardType: TextInputType.number,
+                          validator: (String value) {
+                            if (value.length < 13) {
+                              return AppLocalizations.of(context)
+                                  .errorBarcodeLength;
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 16.0,
+                      ),
+                      RaisedButton(
+                        child: Text(
+                          AppLocalizations.of(context).search.toUpperCase(),
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {
                           _searchByText();
                         },
-                        controller: controller,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)
-                              .barcodeSearchFieldTitle,
-                        ),
-                        maxLength: 13,
-                        keyboardType: TextInputType.number,
-                        validator: (String value) {
-                          if (value.length < 13) {
-                            return AppLocalizations.of(context)
-                                .errorBarcodeLength;
-                          }
-                        },
                       ),
-                    ),
-                    SizedBox(
-                      width: 16.0,
-                    ),
-                    RaisedButton(
-                      child: Text(
-                        AppLocalizations.of(context).search.toUpperCase(),
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                      color: Theme.of(context).accentColor,
-                      onPressed: () {
-                        _searchByText();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    '${AppLocalizations.of(context).searchHistory} (${model.flowerList.length})',
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context).textTheme.caption,
+                    ],
                   ),
                 ),
-              ],
-            ),
-            Divider(),
-            Expanded(child: Container(child: FlowerList())),
-          ],
+              ),
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      '${AppLocalizations.of(context).searchHistory} (${model.flowerList.length})',
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ),
+                ],
+              ),
+              Divider(),
+              Expanded(child: Container(child: FlowerList())),
+            ],
+          ),
         ),
         floatingActionButton: showFab
             ? FloatingActionButton(
