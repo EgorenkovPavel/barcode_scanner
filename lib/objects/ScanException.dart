@@ -1,11 +1,15 @@
+import 'package:meta/meta.dart';
 
 class ScanException implements Exception {
 
   final ExceptionType _type;
+  final String _barcode;
 
-  ScanException(this._type);
+  ScanException({@required ExceptionType type, String barcode = ''}) : _type = type, _barcode = barcode;
 
   ExceptionType get type => _type;
+
+  String get barcode => _barcode;
 
 }
 

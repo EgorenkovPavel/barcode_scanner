@@ -49,7 +49,7 @@ class MainModel extends Model{
     }
 
     if(!_connected){
-      throw ScanException(ExceptionType.NO_CONNECTION);
+      throw ScanException(type: ExceptionType.NO_CONNECTION);
     }
 
     http.Response response;
@@ -59,19 +59,19 @@ class MainModel extends Model{
       response = await http.post(
           ConnectionSettings.serverPath, body: body, headers: headers);
     } catch (e) {
-      throw ScanException(ExceptionType.CONNECTION_ERROR);
+      throw ScanException(type: ExceptionType.CONNECTION_ERROR);
     }
 
     if (response.statusCode == 400) {
-      throw ScanException(ExceptionType.WRONG_FORMAT);
+      throw ScanException(type: ExceptionType.WRONG_FORMAT, barcode: barcode);
     }
 
     if (response.statusCode == 404) {
-      throw ScanException(ExceptionType.NOT_FOUND);
+      throw ScanException(type: ExceptionType.NOT_FOUND, barcode: barcode);
     }
 
     if (response.statusCode != 200) {
-      throw ScanException(ExceptionType.SERVER_ERROR);
+      throw ScanException(type: ExceptionType.SERVER_ERROR);
     }
 
     Map<String, dynamic> map = json.decode(utf8.decode(response.bodyBytes));
