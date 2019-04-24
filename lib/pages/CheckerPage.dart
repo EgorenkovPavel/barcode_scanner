@@ -35,7 +35,7 @@ class CheckerPageState extends State<CheckerPage> {
           title: Text(AppLocalizations.of(context).priceChecker),
         ),
         body: FormKeyboardActions(
-          keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+          keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
           nextFocus: false,
           actions: [
             KeyboardAction(
