@@ -1,4 +1,4 @@
-import 'package:barcode_scanner/Localization.dart';
+import 'package:barcode_scanner/localizations/Localization.dart';
 import 'package:barcode_scanner/objects/ScanException.dart';
 import 'package:flutter/material.dart';
 

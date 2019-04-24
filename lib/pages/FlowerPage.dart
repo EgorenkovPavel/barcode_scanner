@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:barcode_scanner/objects/ScanException.dart';
-import '../Localization.dart';
+import 'package:barcode_scanner/localizations/Localization.dart';
 import '../MainModel.dart';
 import '../objects/flower.dart';
 import '../widgets/FlowerCard.dart';

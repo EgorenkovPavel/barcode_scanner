@@ -2,7 +2,7 @@ import 'package:barcode_scanner/objects/flower.dart';
 import 'package:barcode_scanner/widgets/Price.dart';
 import 'package:flutter/material.dart';
 import '../ConnectionSettings.dart';
-import '../Localization.dart';
+import 'package:barcode_scanner/localizations/Localization.dart';
 
 class FlowerCard extends StatelessWidget{
   final Flower _flower;

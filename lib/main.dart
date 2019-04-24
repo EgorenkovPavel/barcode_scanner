@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import './CupertinoLocalization.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:connectivity/connectivity.dart';
 
-import './Localization.dart';
+import 'package:barcode_scanner/localizations/Localization.dart';
+import 'package:barcode_scanner/localizations/CupertinoLocalization.dart';
 import './MainModel.dart';
 import './pages/CheckerPage.dart';
 import './pages/FlowerPage.dart';
@@ -26,6 +26,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    super.initState();
     Connectivity().checkConnectivity().then((ConnectivityResult result){
       _model.connected(result != ConnectivityResult.none);
     });
@@ -36,6 +37,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    super.dispose();
     subscription.cancel();
   }
 

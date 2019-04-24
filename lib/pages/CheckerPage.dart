@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-import '../Localization.dart';
+import 'package:barcode_scanner/localizations/Localization.dart';
 import '../MainModel.dart';
 
 import '../widgets/FlowerList.dart';
@@ -35,7 +35,7 @@ class CheckerPageState extends State<CheckerPage> {
           title: Text(AppLocalizations.of(context).priceChecker),
         ),
         body: FormKeyboardActions(
-          keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+          keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
           nextFocus: false,
           actions: [
             KeyboardAction(
@@ -91,6 +91,7 @@ class CheckerPageState extends State<CheckerPage> {
                         ),
                         color: Theme.of(context).accentColor,
                         onPressed: () {
+                          FocusScope.of(context).requestFocus(new FocusNode());
                           _searchByText();
                         },
                       ),

@@ -13,9 +13,8 @@ import './objects/flower.dart';
 class MainModel extends Model{
 
   bool _connected = false;
-
   Map<String, Flower> _flowers = {};
-  var _flowerList = [];
+  List<Flower> _flowerList = [];
 
   connected(bool value) {
     _connected = value;
@@ -87,7 +86,6 @@ class MainModel extends Model{
         color: map['color'],
         regularPrice: map['regularPrice'].toDouble(),
         photoPath: map['photoPath'],
-//        photoPath: 'https://cabinet.7flowers.ru/scanner/photo?barcode=${map['barcode']}',
         delicious: map['delicious'],
         sale: map['action'],
         premium: map['premium'],
